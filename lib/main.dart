@@ -1,44 +1,10 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:simple_workmanager/utils/workmanager_helper.dart';
 import 'package:workmanager/workmanager.dart';
 
 void main() => runApp(MyApp());
-
-const simpleTaskKey = "simpleTask";
-const simpleDelayedTask = "simpleDelayedTask";
-const simplePeriodicTask = "simplePeriodicTask";
-const simplePeriodic1HourTask = "simplePeriodic1HourTask";
-
-void callbackDispatcher() {
-  Workmanager.executeTask((task, inputData) async {
-    switch (task) {
-      case simpleTaskKey:
-        print("$simpleTaskKey was executed. inputData = $inputData");
-        Fluttertoast.showToast(msg: "Rifa simple task with data");
-        break;
-      case simpleDelayedTask:
-        print("$simpleDelayedTask was executed");
-        Fluttertoast.showToast(msg: "Rifa delayed task");
-        break;
-      case simplePeriodicTask:
-        print("$simplePeriodicTask was executed");
-        Fluttertoast.showToast(msg: "Rifa periodic task");
-        break;
-      case simplePeriodic1HourTask:
-        print("$simplePeriodic1HourTask was executed");
-        Fluttertoast.showToast(msg: "Rifa periodic one hour task");
-        break;
-      case Workmanager.iOSBackgroundTask:
-        print("The iOS background fetch was triggered");
-        Fluttertoast.showToast(msg: "Rifa iOS task");
-        break;
-    }
-    return Future.value(true);
-  });
-}
 
 class MyApp extends StatefulWidget {
   @override
@@ -141,6 +107,18 @@ class _MyAppState extends State<MyApp> {
                     Workmanager.registerPeriodicTask(
                       "4",
                       simplePeriodic1HourTask,
+                      frequency: Duration(hours: 1),
+                    );
+                  }),
+              //This task runs periodically
+              //It will run about every 9 PM
+              PlatformEnabledButton(
+                  platform: _Platform.android,
+                  child: Text("Register Periodic Task with Scheduled"),
+                  onPressed: () {
+                    Workmanager.registerPeriodicTask(
+                      "5",
+                      simplePeriodicWithScheduled,
                       frequency: Duration(hours: 1),
                     );
                   }),
